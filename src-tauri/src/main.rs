@@ -19,15 +19,23 @@ fn get_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>, Box
     };
     let rows = conn.query(query)?;
     for row in rows {
-        let (nome, foto, formato_imagem) = my::from_row(row?);
+        let (nome, descricao, preco, foto, formato_imagem) = my::from_row(row?);
         let formato_imagem = get_file_format(&formato_imagem);
         documents.push(Document {
-            nome,
-            foto,
-            formato_imagem,
+                nome,
+                descricao,
+                preco,
+                foto,
+                formato_imagem,
         });
     }
     Ok(documents)
+}
+
+fn get_file_format(full_conversion_info: &str) -> String {
+    full_conversion_info
+        .replace("image/", "")
+        .replace(";base64", "")
 }
 
 fn main() {
