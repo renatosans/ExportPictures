@@ -10,10 +10,10 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
-    format!("So {} you re trying to call RUST from Typescript", name)
+    format!("So {} you re trying to call RUST from Typescript ?", name)
 }
 
-
+/*
 fn get_documents() -> Vec<Document> {
     let mut conn = my::Conn::new(
         my::Opts::new()
@@ -54,6 +54,7 @@ fn get_file_format(full_conversion_info: &str) -> String {
         .replace("image/", "")
         .replace(";base64", "")
 }
+*/
 
 fn main() {
     tauri::Builder::default()
