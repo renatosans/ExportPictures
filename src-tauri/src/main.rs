@@ -1,14 +1,6 @@
-use mysql as my;
-use std::error::Error;
+// use mysql as my;
+// use std::error::Error;
 // use crate::product::Product;
-
-struct Document {
-    nome: String,
-    descricao: String,
-    preco: f64,
-    foto: String,
-    formato_imagem: String,
-}
 
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
@@ -21,7 +13,7 @@ fn greet(name: &str) -> String {
     format!("So {} you re trying to call RUST from Typescript", name)
 }
 
-#[tauri::command]
+
 fn get_documents() -> Vec<Document> {
     let mut conn = my::Conn::new(
         my::Opts::new()
