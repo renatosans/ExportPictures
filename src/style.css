@@ -84,6 +84,61 @@ button {
   margin-right: 5px;
 }
 
+#card-container {
+  width: 30rem;
+  background-color: rgba(155, 155, 155, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  perspective: 800px;
+}
+
+.card {
+  transform-style: preserve-3d;
+  min-height: 100%;
+  width: 100%;
+  padding-bottom: 1.5rem;
+}
+
+.card .card-img {
+  max-width: 100%;
+  transition: all 0.2s;
+  filter: drop-shadow(10px 10px 14px rgba(0, 0, 0, 0.3));
+}
+
+.card .card-img img {
+  display: block;
+  width: 100%;
+  height: 25rem;
+  object-fit: cover;
+}
+
+.card .card-info {
+  padding-left: 1.8rem;
+  padding-right: 1.8rem;
+}
+
+.card .card-info .card-sneakers-name {
+  color: rgb(90, 90, 90);
+}
+
+.card .card-info .card-sneakers-description {
+  color: rgb(155, 155, 155);
+  font-size: 1.1rem;
+  font-weight: normal;
+  margin: 0.8rem 0;
+}
+
+.card-info .card-small-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-info .card-small-info .product-price {
+  color: var(--primary-color);
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
