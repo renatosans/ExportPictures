@@ -10,7 +10,11 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn get_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>, Box<dyn Error>> {
+fn get_documents() -> Vec<Document> {
+    documents
+}
+
+fn retrieve_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>, Box<dyn Error>> {
     let mut documents = Vec::new();
     let query = if filter.is_empty() {
         "SELECT * FROM `commercedb`.`produto`".to_string()
@@ -38,9 +42,21 @@ fn get_file_format(full_conversion_info: &str) -> String {
         .replace(";base64", "")
 }
 
+let documents: Vec<Document>;
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+
+    let mut conn = my::Conn::new(
+        my::Opts::new()
+            .ip_or_hostname("localhost")
+            .user("root")
+            .pass("p@ssw0rd")
+            .db_name("commercedb"),
+    )?;
+
+    documents = retrieve_documents(&mut conn, "")?;
 }
