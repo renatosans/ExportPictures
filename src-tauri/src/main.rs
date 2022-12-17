@@ -1,7 +1,14 @@
 use mysql as my;
 use std::error::Error;
-use crate::product::Product
+// use crate::product::Product;
 
+struct Document {
+    nome: String,
+    descricao: String,
+    preco: f64,
+    foto: String,
+    formato_imagem: String,
+}
 
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
@@ -39,7 +46,7 @@ fn retrieve_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>
     for row in rows {
         let (nome, descricao, preco, foto, formato_imagem) = my::from_row(row?);
         let formato_imagem = get_file_format(&formato_imagem);
-        documents.push(Product {
+        documents.push(Document {
                 nome,
                 descricao,
                 preco,

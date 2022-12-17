@@ -1,3 +1,5 @@
+mod product
+
 
 struct Product {
     nome: String,
