@@ -1,5 +1,5 @@
 
-struct Document {
+struct Product {
     nome: String,
     descricao: String,
     preco: f64,

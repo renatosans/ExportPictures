@@ -1,3 +1,7 @@
+use std::error::Error;
+use crate::product::Product
+
+
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
@@ -11,7 +15,16 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 fn get_documents() -> Vec<Document> {
-    documents
+    let mut conn = my::Conn::new(
+        my::Opts::new()
+            .ip_or_hostname("localhost")
+            .user("root")
+            .pass("p@ssw0rd")
+            .db_name("commercedb"),
+    )?;
+
+    let documents: Vec<Document> = retrieve_documents(&mut conn, "")?;
+    Ok(documents)
 }
 
 fn retrieve_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>, Box<dyn Error>> {
@@ -25,7 +38,7 @@ fn retrieve_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>
     for row in rows {
         let (nome, descricao, preco, foto, formato_imagem) = my::from_row(row?);
         let formato_imagem = get_file_format(&formato_imagem);
-        documents.push(Document {
+        documents.push(Product {
                 nome,
                 descricao,
                 preco,
@@ -42,21 +55,9 @@ fn get_file_format(full_conversion_info: &str) -> String {
         .replace(";base64", "")
 }
 
-let documents: Vec<Document>;
-
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-
-    let mut conn = my::Conn::new(
-        my::Opts::new()
-            .ip_or_hostname("localhost")
-            .user("root")
-            .pass("p@ssw0rd")
-            .db_name("commercedb"),
-    )?;
-
-    documents = retrieve_documents(&mut conn, "")?;
 }
