@@ -1,3 +1,4 @@
+use mysql as my;
 use std::error::Error;
 use crate::product::Product
 
