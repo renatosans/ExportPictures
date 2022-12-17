@@ -1,6 +1,12 @@
-// use mysql as my;
-// use std::error::Error;
-// use crate::product::Product;
+extern crate mysql;
+extern crate serde;
+extern crate serde_json;
+
+use mysql as my;
+use mysql::prelude::*;
+use serde::{Serialize, Deserialize};
+use serde_json::to_string;
+
 
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
@@ -11,6 +17,27 @@
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("So {} you re trying to call RUST from Typescript ?", name)
+}
+
+#[tauri::command]
+fn get_products() -> String {
+    let pool = my::Pool::new("mysql://root:P@ssw0rd@localhost:3306/commercedb").unwrap();
+
+    let products: Vec<Product> = pool.query_map("SELECT nome, descricao, preco, foto FROM product", |(nome, descricao, preco, foto)| {
+            Product { nome, descricao, preco, foto }
+        }).unwrap();
+
+    // Convert the results to a JSON string
+    let json_string = to_string(&products).unwrap();
+    Ok(json_string)
+}
+
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
+struct Product {
+        nome: String,
+        descricao: String,
+        preco: f64,
+        foto: String,
 }
 
 /*

@@ -9,7 +9,7 @@ let greetMsgEl: HTMLElement | null;
 async function greet() {
   if (greetMsgEl && greetInputEl) {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value, } );
+    greetMsgEl.textContent = await invoke("get_products");
   }
 }
 
@@ -20,7 +20,5 @@ window.addEventListener("DOMContentLoaded", () => {
 
   greetInputEl = document.querySelector("#greet-input");
   greetMsgEl = document.querySelector("#greet-msg");
-  document
-    .querySelector("#greet-button")
-    ?.addEventListener("click", () => greet());
+  document.querySelector("#greet-button")?.addEventListener("click", () => greet());
 });
