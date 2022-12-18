@@ -22,8 +22,9 @@ fn greet(name: &str) -> String {
 #[tauri::command]
 fn get_products() -> String {
     let pool = my::Pool::new("mysql://root:P@ssw0rd@localhost:3306/commercedb").unwrap();
+    let mut conn = pool.get_conn().unwrap();
 
-    let products: Vec<Product> = pool.query_map("SELECT nome, descricao, preco, foto FROM product", |(nome, descricao, preco, foto)| {
+    let products: Vec<Product> = conn.query_map("SELECT nome, descricao, preco, foto FROM product", |(nome, descricao, preco, foto)| {
             Product { nome, descricao, preco, foto }
         }).unwrap();
 
