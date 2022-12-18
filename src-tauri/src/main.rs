@@ -23,7 +23,7 @@ fn get_products() -> String {
         std::process::exit(1);
     });
 
-    let products: Vec<Product> = conn.query_map("SELECT nome, descricao, preco, foto FROM product", |(nome, descricao, preco, foto)| {
+    let products: Vec<Product> = conn.query_map("SELECT nome, descricao, preco, foto FROM produto", |(nome, descricao, preco, foto)| {
             Product { nome, descricao, preco, foto }
         }).unwrap_or_else(|e| {
             eprintln!("Error running SELECT query: {}", e );
