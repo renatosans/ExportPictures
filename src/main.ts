@@ -7,9 +7,14 @@ let greetMsgEl: HTMLElement | null;
 
 
 async function greet() {
+  let productList = "";
+
+  let produtos = JSON.parse(await invoke("get_products"));
+  produtos.map((produto: any) => { productList += `${produto.nome} Price: ${produto.preco} <br/>`   })
+
   if (greetMsgEl && greetInputEl) {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    greetMsgEl.textContent = await invoke("get_products");
+    greetMsgEl.innerHTML = `Greetings ${greetInputEl.value} <br/><br/>` + productList;
   }
 }
 
