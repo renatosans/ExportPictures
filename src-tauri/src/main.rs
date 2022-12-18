@@ -1,39 +1,45 @@
-extern crate mysql;
-extern crate serde;
-extern crate serde_json;
-
-use mysql as my;
-use mysql::prelude::*;
-use serde::{Serialize, Deserialize};
-use serde_json::to_string;
-
-
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
 
+extern crate mysql;
+extern crate serde;
+
+use mysql as my;
+use mysql::prelude::*;
+use serde::{Serialize, Deserialize};
+
+
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("So {} you re trying to call RUST from Typescript ?", name)
-}
-
-#[tauri::command]
 fn get_products() -> String {
-    let pool = my::Pool::new("mysql://root:P@ssw0rd@localhost:3306/commercedb").unwrap();
-    let mut conn = pool.get_conn().unwrap();
+    let pool = my::Pool::new("mysql://root:p@ssw0rd@localhost:3306/commercedb").unwrap_or_else(|_| {
+        eprintln!("Error creating connection pool");
+        std::process::exit(1);
+    });
+    let mut conn = pool.get_conn().unwrap_or_else(|_| {
+        eprintln!("Error acquiring connection from pool");
+        std::process::exit(1);
+    });
 
     let products: Vec<Product> = conn.query_map("SELECT nome, descricao, preco, foto FROM product", |(nome, descricao, preco, foto)| {
             Product { nome, descricao, preco, foto }
-        }).unwrap();
+        }).unwrap_or_else(|e| {
+            eprintln!("Error running SELECT query: {}", e );
+            std::process::exit(1);
+        });
 
     // Convert the results to a JSON string
-    let json_string = to_string(&products).unwrap();
-    Ok(json_string)
+    let json_string = serde_json::to_string(&products).unwrap_or_else(|_| {
+        eprintln!("Error serializing vector to JSON string");
+        std::process::exit(1);
+    });
+
+    json_string
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Product {
         nome: String,
         descricao: String,
@@ -76,17 +82,11 @@ fn retrieve_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>
     }
     Ok(documents)
 }
-
-fn get_file_format(full_conversion_info: &str) -> String {
-    full_conversion_info
-        .replace("image/", "")
-        .replace(";base64", "")
-}
 */
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![get_products])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
