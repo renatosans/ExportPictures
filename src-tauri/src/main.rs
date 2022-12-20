@@ -5,11 +5,28 @@
 
 extern crate mysql;
 extern crate serde;
+extern crate diesel;
 
 use mysql as my;
 use mysql::prelude::*;
 use serde::{Serialize, Deserialize};
+//use diesel::prelude::*;
+//use diesel::mysql::MysqlConnection;
 
+
+/*
+fn get_products_orm(conn: &MysqlConnection) -> String {
+    let products: Vec<Product> = products::table.load(conn)?;
+
+    // Convert the results to a JSON string
+    let json_string = serde_json::to_string(&products).unwrap_or_else(|_| {
+        eprintln!("Error serializing vector to JSON string");
+        std::process::exit(1);
+    });
+
+    json_string
+}
+*/
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -48,19 +65,6 @@ struct Product {
 }
 
 /*
-fn get_documents() -> Vec<Document> {
-    let mut conn = my::Conn::new(
-        my::Opts::new()
-            .ip_or_hostname("localhost")
-            .user("root")
-            .pass("p@ssw0rd")
-            .db_name("commercedb"),
-    )?;
-
-    let documents: Vec<Document> = retrieve_documents(&mut conn, "")?;
-    Ok(documents)
-}
-
 fn retrieve_documents(conn: &mut my::Conn, filter: &str) -> Result<Vec<Document>, Box<dyn Error>> {
     let mut documents = Vec::new();
     let query = if filter.is_empty() {
