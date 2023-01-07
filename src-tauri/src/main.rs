@@ -30,6 +30,27 @@ fn get_products_orm(conn: &MysqlConnection) -> String {
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
+fn insert_product() {
+    let pool = my::Pool::new("mysql://root:p@ssw0rd@localhost:3306/commercedb").unwrap_or_else(|_| {
+        eprintln!("Error creating connection pool");
+        std::process::exit(1);
+    });
+    let mut conn = pool.get_conn().unwrap_or_else(|_| {
+        eprintln!("Error acquiring connection from pool");
+        std::process::exit(1);
+    });
+
+    let query = "INSERT INTO `commercedb`.`produto` (nome, preco, foto, formatoImagem) VALUES (?, ?, ?, ?)";
+    let params = vec!["Product 1", "1.99", "filename", "extension"];
+    conn.exec_iter(query, params).unwrap_or_else(|_| {
+        eprintln!("Error inserting product");
+        std::process::exit(1);
+    });
+
+    // pool.release(conn);
+}
+
+#[tauri::command]
 fn get_products() -> String {
     let pool = my::Pool::new("mysql://root:p@ssw0rd@localhost:3306/commercedb").unwrap_or_else(|_| {
         eprintln!("Error creating connection pool");

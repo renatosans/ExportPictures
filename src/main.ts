@@ -7,6 +7,10 @@ let greetMsgEl: HTMLElement | null;
 
 
 async function greet() {
+//  let result = await invoke("insert_product");
+//  if (result)
+//      console.log("1 record stored");
+
   let productList = "";
 
   let produtos = JSON.parse(await invoke("get_products"));
